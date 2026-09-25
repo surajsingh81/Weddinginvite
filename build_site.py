@@ -7,6 +7,7 @@ and refresh the page.
 
 Run:  python3 build_site.py
 """
+import hashlib
 import json
 import os
 import re
@@ -356,6 +357,25 @@ def build():
     print(f"  {len(events)} functions across {len(days)} day(s)")
     for day in days:
         print(f"    {day['date']}: {len(day['events'])} function(s)")
+
+    # GitHub Pages serves data.js with max-age=600, so a guest who opened the
+    # page before an update can keep seeing the old names for 10 minutes. Stamp
+    # the payload hash into the script tag so a rebuild always busts the cache.
+    stamp = hashlib.sha1(payload.encode("utf-8")).hexdigest()[:8]
+    index = os.path.join(os.path.dirname(OUT), "index.html")
+    if os.path.exists(index):
+        with open(index, encoding="utf-8") as fh:
+            html = fh.read()
+        stamped, n = re.subn(
+            r'(<script src=")data\.js(\?v=[0-9a-f]+)?(")',
+            lambda m: f"{m.group(1)}data.js?v={stamp}{m.group(3)}",
+            html,
+        )
+        if n and stamped != html:
+            with open(index, "w", encoding="utf-8") as fh:
+                fh.write(stamped)
+            print(f"stamped {os.path.basename(index)} with ?v={stamp}")
+
     if missing:
         print(f"\nStill to fill in ({len(missing)}):")
         for label in missing:
