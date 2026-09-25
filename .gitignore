@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+
+# OpenWork session data, including the original card image that was attached
+# to the chat. This is private working material, not part of the site.
+.opencode/
+
+# The workbook is the source of truth for the site, but it is a private file:
+# once you fill it in it will hold real phone numbers, and the RSVP List sheet
+# is meant to hold guests' names and replies. Keep it out of a public repo.
+#
+# Publishing does not need it. docs/ is already the built site, so GitHub Pages
+# deploys fine without this file, and docs/data.js is tracked, so a rebuild still
+# goes live on the next push.
+#
+# To keep a rebuildable copy under version control too, delete the line below --
+# but read the note above first, and check the RSVP List sheet holds no real
+# guests before you do.
+wedding-details.xlsx
