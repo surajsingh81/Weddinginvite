@@ -44,7 +44,7 @@ rows = [
     ("Wedding Main Event", "Vidai (Milap)", "Read from card"),
     ("Wedding Date", "12 Dec 2026", "Read from card: 12 Dec, 4:00 AM"),
     ("Wedding Start Time", "04:00 AM", "Read from card"),
-    ("Countdown Event", "Darwagar", "Must match a name in the Wedding Functions sheet; drives the hero countdown"),
+    ("Countdown Event", "Baraat Prasthan", "Must match a name in the Wedding Functions sheet; drives the hero countdown"),
     ("Function Dates", "09 Dec 2026 to 12 Dec 2026", "Read from card"),
     ("City", FILLIN, "Not machine readable from card"),
     ("Primary Venue Name", FILLIN, "Wedding / main function venue"),
@@ -111,7 +111,7 @@ funcs = [
     (8, "11 Dec 2026", "Bhunga Lawa", "03:00 PM", FILLIN, "", "No"),
     (9, "11 Dec 2026", "Bardekhai", "05:00 PM - 07:00 PM", FILLIN, "", "No"),
     (10, "11 Dec 2026", "Parat", "03:00 PM", FILLIN, "", "No"),
-    (11, "11 Dec 2026", "Darwagar", "07:00 PM", FILLIN, "", "No"),
+    (11, "11 Dec 2026", "Baraat Prasthan", "07:00 PM", FILLIN, "", "No"),
     (12, "12 Dec 2026", "Vidai (Milap)", "04:00 AM", FILLIN, "Main ceremony", "No"),
 ]
 for r in funcs:

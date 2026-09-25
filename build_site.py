@@ -37,7 +37,8 @@ RITUAL_ICONS = [
     ("bhungalawa", ["bhunga lawa", "bhungla", "bhunga"]),
     ("bardekhai", ["bardekhai", "barde khai", "vardekhai"]),
     ("parat", ["parat", "praat", "parath"]),
-    ("darwagar", ["darwagar", "darwached", "darwargar", "darwargarh"]),
+    ("darwagar", ["darwagar", "darwached", "darwargar", "darwargarh",
+                  "baraat", "baraat prasthan", "baraat prasan", "prasthan"]),
     ("vidai", ["vidai", "milap", "widaai", "vidaai"]),
 ]
 
@@ -307,7 +308,7 @@ def build():
 
     # "Countdown Event" names the function the hero countdown targets. Match it
     # against the Functions sheet (loose compare, so "darwagar" finds
-    # "Darwagar"). Fall back to the main event, then to the earliest function.
+    # "Baraat Prasthan"). Fall back to the main event, then to the earliest function.
     countdown = None
     wanted = str(details.get("Countdown Event", "")).strip().lower()
     if wanted:
