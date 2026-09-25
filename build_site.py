@@ -305,8 +305,21 @@ def build():
 
     events, days = read_functions(wb, default_year)
 
-    # Earliest event drives the countdown; fall back to the main wedding date.
-    countdown = events[0] if events else None
+    # "Countdown Event" names the function the hero countdown targets. Match it
+    # against the Functions sheet (loose compare, so "darwagar" finds
+    # "Darwagar"). Fall back to the main event, then to the earliest function.
+    countdown = None
+    wanted = str(details.get("Countdown Event", "")).strip().lower()
+    if wanted:
+        for ev in events:
+            if wanted in str(ev.get("event", "")).strip().lower():
+                countdown = ev
+                break
+        if countdown is None:
+            print(f"  warning: Countdown Event {details['Countdown Event']!r} "
+                  f"matches no function; using the earliest instead")
+    if countdown is None:
+        countdown = events[0] if events else None
     if countdown is None:
         parsed = parse_date(details.get("Wedding Date"), default_year)
         if parsed:

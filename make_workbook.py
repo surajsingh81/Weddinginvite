@@ -44,6 +44,7 @@ rows = [
     ("Wedding Main Event", "Vidai (Milap)", "Read from card"),
     ("Wedding Date", "12 Dec 2026", "Read from card: 12 Dec, 4:00 AM"),
     ("Wedding Start Time", "04:00 AM", "Read from card"),
+    ("Countdown Event", "Darwagar", "Must match a name in the Wedding Functions sheet; drives the hero countdown"),
     ("Function Dates", "09 Dec 2026 to 12 Dec 2026", "Read from card"),
     ("City", FILLIN, "Not machine readable from card"),
     ("Primary Venue Name", FILLIN, "Wedding / main function venue"),
