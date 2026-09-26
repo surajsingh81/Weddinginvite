@@ -94,6 +94,19 @@
   }
   setText("countdownLabel", (data.countdown && data.countdown.event) ? "Counting down to " + data.countdown.event : "Counting down to the wedding");
 
+  // The Baraat feature card is captioned from the same countdown object, so it
+  // can never drift out of step with the countdown above it.
+  (function () {
+    var box = $("feature");
+    if (!box || !data.countdown) return;
+    var c = data.countdown;
+    setText("featureName", c.event || "");
+    var when = niceDate(c.date, { weekday: "long", day: "numeric", month: "long" });
+    if (c.time) when += " · " + c.time;
+    setText("featureDate", when);
+    box.hidden = false;
+  })();
+
   function tick() {
     if (!targetTime) { $("countdown").hidden = true; return; }
     var diff = targetTime - new Date();

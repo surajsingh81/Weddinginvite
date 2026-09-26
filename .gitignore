@@ -21,3 +21,5 @@ __pycache__/
 # but read the note above first, and check the RSVP List sheet holds no real
 # guests before you do.
 wedding-details.xlsx
+~$wedding-details.xlsx
+*.xlsx.lock

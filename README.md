@@ -181,3 +181,15 @@ The printed card is written in a decorative script that OCR cannot read
 reliably, so names, parents, venue, and address came off the image by eye and
 are the values to check most carefully. The 12 function rows came off the
 printed table and are more trustworthy, but still worth a look.
+
+## The photographs
+
+The hero, the Baraat card and the flower band use photographs from Wikimedia
+Commons, re-encoded small so the page stays quick on a phone. Each one is
+reused under a permissive licence (CC0, public domain, CC BY or CC BY-SA) and
+is credited in [`docs/assets/photos/CREDITS.md`](docs/assets/photos/CREDITS.md).
+
+To swap them, drop replacements into `docs/assets/photos/` using the same
+filenames — `hero.jpg`, `hero-sm.jpg`, `baraat.jpg`, `ritual.jpg` — or re-run
+`python3 fetch_photos.py` then `python3 process_photos.py` to fetch and
+re-encode a fresh set.

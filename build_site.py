@@ -360,8 +360,13 @@ def build():
 
     # GitHub Pages serves data.js with max-age=600, so a guest who opened the
     # page before an update can keep seeing the old names for 10 minutes. Stamp
-    # the payload hash into the script tag so a rebuild always busts the cache.
-    stamp = hashlib.sha1(payload.encode("utf-8")).hexdigest()[:8]
+    # a hash of the *content* into the script tag so a rebuild always busts the
+    # cache. The "generated" clock is excluded, otherwise the stamp would churn
+    # on every run and would stay frozen for two edits made in the same minute.
+    fingerprint = {k: v for k, v in data.items() if k != "generated"}
+    stamp = hashlib.sha1(
+        json.dumps(fingerprint, indent=2, ensure_ascii=False).encode("utf-8")
+    ).hexdigest()[:8]
     index = os.path.join(os.path.dirname(OUT), "index.html")
     if os.path.exists(index):
         with open(index, encoding="utf-8") as fh:
