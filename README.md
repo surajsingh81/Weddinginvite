@@ -68,7 +68,7 @@ prints `Missing wedding-details.xlsx`, run `python3 make_workbook.py` first.
 ## 3. Run it locally
 
 ```bash
-python3 -m http.server 8347 --directory site
+python3 -m http.server 8347 --directory docs
 ```
 
 Then visit http://localhost:8347
@@ -100,11 +100,21 @@ reason `app.js` reads `data.js` directly and ignores anything in
 To change a detail, edit `wedding-details.xlsx`, run `python3 build_site.py`, and
 reload. That is the only path, and it stays on your machine.
 
-## 5. The artwork
+## 5. The look
 
-Everything visual is original vector art drawn by `make_art.py`, in a Rajasthani
-Hindu palette: maroon, marigold and gold, with a Hawa Mahal jali, a toran of
-marigolds and mango leaves, a kalash, a mandap, peacocks, and diyas.
+The page is soft pastel romance on a warm ivory base: sage and olive for the
+structure, blush for the names, hairline rules instead of heavy borders, and
+Cormorant Garamond over Jost. The sage is lifted from
+[theweddingwebsite.in](https://theweddingwebsite.in), whose homepage runs on
+`#d0dfb9` and `#4e5e32`; the rest is original.
+
+There are no photographs on the page. If you ever want one, drop a file into
+`docs/assets/` and add an `<img>` inside `.hero__card` in `index.html`, above
+the blessing line.
+
+Everything else visual is original vector art drawn by `make_art.py`: a Hawa
+Mahal jali, a toran of marigolds and mango leaves, a kalash, a mandap, peacocks,
+diyas, and one line drawing per ritual.
 
 ```bash
 python3 make_art.py    # rewrites the 24 SVGs in docs/assets/
@@ -120,14 +130,17 @@ Two things worth knowing if you edit the drawings:
 
 - **The ritual icons are stroked with `currentColor`.** They are inlined into
   `data.js` by `build_site.py` rather than loaded with `<img>`, so they inherit
-  the maroon theme. As an `<img>`, a `currentColor` icon renders black.
+  the theme colour. As an `<img>`, a `currentColor` icon renders black.
 - **An icon's viewBox is fitted to its own drawing.** That is why the numbers are
   odd, like `viewBox="4.97 9.00 54.02 54.02"`. It is deliberate, and it is what
   keeps all twelve icons the same visual weight.
 
-There are no photographs on the page. If you want real pictures, drop files into
-`docs/assets/photos/` and add an `<img>` to the hero in `index.html`; the guest
-photos slot in above the names.
+### Recolouring it
+
+Every colour is a custom property at the top of `styles.css`. Change `--sage-700`
+and `--rose` and the whole page follows, buttons, tabs and focus rings included.
+Keep body text at 4.5:1 or better against the ivory base; `--ink-mute` is the
+one that fails most easily, because it is used for the small letterspaced labels.
 
 ## 6. Put it online, free
 
@@ -138,21 +151,21 @@ are free and take about five minutes.
 
 1. Push this folder to a new GitHub repo.
 2. Sign in at dash.cloudflare.com, then **Workers & Pages → Create → Pages**.
-3. Connect the GitHub repo. Build command: leave empty. Output directory: `site`.
+3. Connect the GitHub repo. Build command: leave empty. Output directory: `docs`.
 4. Deploy. You get a `*.pages.dev` address; add a custom domain later if you
    want one.
 
 ### Netlify (best drag-and-drop)
 
 1. Sign in at netlify.com.
-2. Drag the `site` folder onto the deploys page.
+2. Drag the `docs` folder onto the deploys page.
 3. The site is live immediately. Later, connect the repo and set the publish
-   directory to `site` so re-pushes go live on their own.
+   directory to `docs` so re-pushes go live on their own.
 
 ### GitHub Pages
 
 ```bash
-cd site
+cd docs
 git init && git add . && git commit -m "wedding invitation"
 git branch -M main
 git remote add origin https://github.com/<you>/<repo>.git
@@ -181,15 +194,3 @@ The printed card is written in a decorative script that OCR cannot read
 reliably, so names, parents, venue, and address came off the image by eye and
 are the values to check most carefully. The 12 function rows came off the
 printed table and are more trustworthy, but still worth a look.
-
-## The photographs
-
-The hero, the Baraat card and the flower band use photographs from Wikimedia
-Commons, re-encoded small so the page stays quick on a phone. Each one is
-reused under a permissive licence (CC0, public domain, CC BY or CC BY-SA) and
-is credited in [`docs/assets/photos/CREDITS.md`](docs/assets/photos/CREDITS.md).
-
-To swap them, drop replacements into `docs/assets/photos/` using the same
-filenames — `hero.jpg`, `hero-sm.jpg`, `baraat.jpg`, `ritual.jpg` — or re-run
-`python3 fetch_photos.py` then `python3 process_photos.py` to fetch and
-re-encode a fresh set.
