@@ -516,7 +516,14 @@
     intro.remove();
   }
 
-  intro.addEventListener("click", dismiss);
-  intro.addEventListener("touchstart", dismiss, { passive: true });
-  setTimeout(dismiss, 4000);
+  /* No click handler: the overlay is `pointer-events: none` so it can never
+     intercept a tap meant for the page underneath. The timer is the real
+     guarantee, and it is re-armed on the way back into the foreground because
+     a tab that was hidden at load often never starts its first animation at
+     all, which would otherwise leave the card sitting on screen. */
+  setTimeout(dismiss, 2600);
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) setTimeout(dismiss, 120);
+  });
+  window.addEventListener("load", function () { setTimeout(dismiss, 2600); });
 })();
