@@ -488,8 +488,6 @@
   var intro = document.getElementById("intro");
   if (!intro) return;
 
-  try { sessionStorage.setItem("wi-intro", "1"); } catch (e) { /* private mode */ }
-
   var D = (window.WEDDING_DATA || {}).details || {};
   var groom = String(D["Groom Name"] || "").trim();
   var bride = String(D["Bride Name"] || "").trim();
@@ -503,11 +501,11 @@
     line.remove();
   }
 
+  /* Plays on every load, including a refresh. It used to be suppressed for
+     the rest of the session via sessionStorage, which meant a guest who
+     reloaded or followed an #rsvp link never saw it again. */
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduce || document.documentElement.classList.contains("intro-seen")) {
-    intro.remove();
-    return;
-  }
+  if (reduce) { intro.remove(); return; }
 
   var done = false;
   function dismiss() {

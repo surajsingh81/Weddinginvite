@@ -91,7 +91,6 @@ img { max-width: 100%; display: block; }
   pointer-events: none;
   animation: intro-out .6s ease 1.95s forwards;
 }
-.intro-seen .intro { display: none !important; }
 
 .intro__glow {
   position: absolute; inset: -20%;

@@ -13,11 +13,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<script>
-  /* Runs before first paint so a returning guest never sees a flash of the
-     intro overlay. Wrapped because sessionStorage throws in private mode. */
-  try { if (sessionStorage.getItem("wi-intro")) document.documentElement.classList.add("intro-seen"); } catch (e) {}
-</script>
 </head>
 <body>
 
