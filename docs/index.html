@@ -13,8 +13,47 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>
+  /* Runs before first paint so a returning guest never sees a flash of the
+     intro overlay. Wrapped because sessionStorage throws in private mode. */
+  try { if (sessionStorage.getItem("wi-intro")) document.documentElement.classList.add("intro-seen"); } catch (e) {}
+</script>
 </head>
 <body>
+
+<!-- ============ ceremonial intro ============
+     Plays once per visit, then removes itself. Decoration only: it holds no
+     focusable elements, and the CSS animation ends it on its own even if the
+     script below never runs. -->
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro__glow"></div>
+
+  <div class="intro__stage">
+    <svg class="intro__arch" viewBox="0 0 220 300" focusable="false">
+      <path class="intro__draw intro__draw--outer" pathLength="100"
+            d="M18 286V142C18 100 44 78 66 92C80 101 86 74 100 62C106 57 110 52 110 44C110 52 114 57 120 62C134 74 140 101 154 92C176 78 202 100 202 142V286"/>
+      <path class="intro__draw intro__draw--inner" pathLength="100"
+            d="M34 286V148C34 114 58 98 80 106C92 110 102 94 110 86C118 94 128 110 140 106C162 98 186 114 186 148V286"/>
+      <circle class="intro__draw intro__draw--finial" pathLength="100" cx="110" cy="30" r="4.5"/>
+      <path class="intro__draw intro__draw--base" pathLength="100" d="M8 286H212"/>
+    </svg>
+
+    <div class="intro__diya">
+      <svg viewBox="0 0 80 62" focusable="false">
+        <path class="intro__flame" d="M40 6C46 15 51 21 51 28a11 11 0 0 1-22 0C29 21 34 15 40 6Z"/>
+        <path class="intro__bowl" d="M10 34h60c0 12-13 20-30 20s-30-8-30-20Z"/>
+        <path class="intro__rim" d="M6 34h68"/>
+      </svg>
+    </div>
+
+    <p class="intro__line">Shubh Vivah</p>
+    <p class="intro__names">
+      <span id="introGroom">&amp;</span><span class="intro__amp" aria-hidden="true">&amp;</span><span id="introBride">&amp;</span>
+    </p>
+  </div>
+
+  <span class="intro__skip">Tap to continue</span>
+</div>
 
 <!-- ============ pastel wash behind everything ============ -->
 <div class="bg" aria-hidden="true">

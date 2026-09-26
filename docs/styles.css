@@ -74,6 +74,92 @@ img { max-width: 100%; display: block; }
   border-radius: 4px;
 }
 
+/* ------------------------------------------------------------- ceremonial intro
+   Plays once per visit. Two independent things end it: the CSS outro below
+   (fill-mode forwards, so it holds opacity 0 / visibility hidden even if the
+   script never runs) and a JS timer. Whichever fires first wins. Nothing here
+   is focusable, so it cannot trap a keyboard user, and it holds no content
+   that matters. */
+.intro {
+  position: fixed; inset: 0; z-index: 100;
+  display: grid; place-items: center;
+  background: var(--ivory);
+  overflow: hidden;
+  animation: intro-out .6s ease 1.95s forwards;
+}
+.intro-seen .intro { display: none !important; }
+
+.intro__glow {
+  position: absolute; inset: -20%;
+  background:
+    radial-gradient(closest-side, var(--blush) 0%, transparent 70%),
+    radial-gradient(closest-side, var(--sage-50) 0%, transparent 70%);
+  background-size: 90% 90%, 90% 90%;
+  background-position: 22% 18%, 78% 82%;
+  background-repeat: no-repeat;
+  opacity: 0;
+  animation: intro-glow 2.4s ease .05s both;
+}
+.intro__stage {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 24px;
+}
+
+/* The arch draws itself. pathLength="100" on each shape normalises the dash
+   maths, so the real geometry never has to be measured. */
+.intro__arch { width: min(46vw, 190px); height: auto; overflow: visible; }
+.intro__draw {
+  fill: none; stroke: #c9a227; stroke-linecap: round;
+  stroke-dasharray: 100; stroke-dashoffset: 100;
+}
+.intro__draw--outer { stroke-width: 2.2; animation: intro-draw 1.05s ease .1s forwards; }
+.intro__draw--inner { stroke-width: 1; opacity: 0; animation: intro-draw .9s ease .35s forwards, intro-fade .5s ease .35s forwards; }
+.intro__draw--finial { stroke-width: 1.4; animation: intro-draw .4s ease .6s forwards; }
+.intro__draw--base { stroke-width: 1.4; opacity: 0; animation: intro-draw .5s ease .55s forwards, intro-fade .4s ease .55s forwards; }
+
+.intro__diya { margin-top: 4px; width: min(30vw, 116px); opacity: 0; animation: intro-rise .6s ease .5s forwards; }
+.intro__diya svg { width: 100%; height: auto; }
+.intro__flame { fill: #e8890c; transform-origin: 50% 92%; animation: intro-flame 1.4s ease-in-out .9s infinite; }
+.intro__bowl { fill: none; stroke: #c9a227; stroke-width: 2; }
+.intro__rim  { fill: none; stroke: #c9a227; stroke-width: 2; stroke-linecap: round; }
+
+.intro__line {
+  margin: 20px 0 0;
+  font-family: var(--display); font-style: italic; font-weight: 400;
+  font-size: clamp(1.1rem, 3.2vw, 1.4rem); letter-spacing: .06em;
+  color: var(--sage-700);
+  opacity: 0; animation: intro-rise .7s ease .75s forwards;
+}
+.intro__names {
+  margin: 6px 0 0;
+  font-family: var(--display); font-weight: 300;
+  font-size: clamp(1.6rem, 6.5vw, 2.5rem);
+  color: var(--rose);
+  opacity: 0; animation: intro-rise .8s ease 1.05s forwards;
+}
+.intro__amp { font-style: italic; font-weight: 400; color: var(--sage-500); padding: 0 .3em; }
+
+.intro__skip {
+  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+  font-family: var(--sans); font-size: .6rem; font-weight: 400;
+  letter-spacing: .24em; text-transform: uppercase; color: var(--ink-mute);
+  opacity: 0; animation: intro-fade .5s ease 1.5s forwards;
+}
+
+@keyframes intro-draw  { to { stroke-dashoffset: 0; } }
+@keyframes intro-fade  { to { opacity: 1; } }
+@keyframes intro-rise  { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes intro-glow  { 0% { opacity: 0; } 45% { opacity: 1; } 100% { opacity: .8; } }
+@keyframes intro-flame {
+  0%, 100% { transform: scaleY(1) scaleX(1); opacity: 1; }
+  35%      { transform: scaleY(1.14) scaleX(.94); opacity: .92; }
+  60%      { transform: scaleY(.94) scaleX(1.05); opacity: 1; }
+}
+@keyframes intro-out {
+  to { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+
 /* ------------------------------------------------------------- pastel wash */
 .bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
 .bg__wash { position: absolute; border-radius: 50%; opacity: .85; }
@@ -535,10 +621,14 @@ img { max-width: 100%; display: block; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
+  /* Must come after the blanket rule above. `animation: none` would stop the
+     intro's outro from ever running, leaving it opaque and click-eating on
+     screen forever, so it is removed from the page entirely instead. */
+  .intro { display: none !important; }
 }
 
 @media print {
-  .bg, .actions, .topbar, .hero__cta, .rsvp-form, .tabs, .saved { display: none !important; }
+  .bg, .intro, .actions, .topbar, .hero__cta, .rsvp-form, .tabs, .saved { display: none !important; }
   body { background: #fff; padding-bottom: 0; }
   .section { padding: 18px 0; page-break-inside: avoid; }
   .hero__card { box-shadow: none; border: 1px solid #ddd; background: #fff; }

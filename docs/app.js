@@ -472,3 +472,51 @@
 
   renderRituals();
 })();
+
+/* ============================================================ ceremonial intro
+   Two independent mechanisms retire the overlay, so a failure in either is
+   harmless. The CSS outro holds `opacity: 0; visibility: hidden` on its own
+   (fill-mode forwards), and this removes the node outright a beat later. The
+   timer is the backstop for the one case CSS cannot cover: a tab backgrounded
+   at load, where some browsers never start the first animation at all.
+
+   Nothing inside the overlay is focusable, so it cannot trap a keyboard user,
+   and a click anywhere skips it. */
+(function () {
+  "use strict";
+
+  var intro = document.getElementById("intro");
+  if (!intro) return;
+
+  try { sessionStorage.setItem("wi-intro", "1"); } catch (e) { /* private mode */ }
+
+  var D = (window.WEDDING_DATA || {}).details || {};
+  var groom = String(D["Groom Name"] || "").trim();
+  var bride = String(D["Bride Name"] || "").trim();
+
+  var line = intro.querySelector(".intro__names");
+  if (groom && bride) {
+    document.getElementById("introGroom").textContent = groom;
+    document.getElementById("introBride").textContent = bride;
+  } else if (line) {
+    /* Never show a lone ampersand if a name is missing from the workbook. */
+    line.remove();
+  }
+
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || document.documentElement.classList.contains("intro-seen")) {
+    intro.remove();
+    return;
+  }
+
+  var done = false;
+  function dismiss() {
+    if (done) return;
+    done = true;
+    intro.remove();
+  }
+
+  intro.addEventListener("click", dismiss);
+  intro.addEventListener("touchstart", dismiss, { passive: true });
+  setTimeout(dismiss, 4000);
+})();
