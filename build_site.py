@@ -358,28 +358,46 @@ def build():
     for day in days:
         print(f"    {day['date']}: {len(day['events'])} function(s)")
 
-    # GitHub Pages serves data.js with max-age=600, so a guest who opened the
-    # page before an update can keep seeing the old names for 10 minutes. Stamp
-    # a hash of the *content* into the script tag so a rebuild always busts the
-    # cache. The "generated" clock is excluded, otherwise the stamp would churn
-    # on every run and would stay frozen for two edits made in the same minute.
-    fingerprint = {k: v for k, v in data.items() if k != "generated"}
-    stamp = hashlib.sha1(
-        json.dumps(fingerprint, indent=2, ensure_ascii=False).encode("utf-8")
-    ).hexdigest()[:8]
+    # Cache busting. GitHub Pages serves these with a max-age, so a guest who
+    # opened the page before an update can keep seeing the old version. Stamp a
+    # hash of each asset's own *content* into its tag, so any real edit always
+    # produces a new URL and a no-op rebuild leaves it alone.
+    #
+    # This has to cover styles.css and app.js, not just data.js. Those two were
+    # unstamped, which let a browser pair fresh HTML with a cached old
+    # stylesheet — the combination that made the layout look scattered.
     index = os.path.join(os.path.dirname(OUT), "index.html")
     if os.path.exists(index):
         with open(index, encoding="utf-8") as fh:
             html = fh.read()
-        stamped, n = re.subn(
-            r'(<script src=")data\.js(\?v=[0-9a-f]+)?(")',
-            lambda m: f"{m.group(1)}data.js?v={stamp}{m.group(3)}",
-            html,
-        )
-        if n and stamped != html:
+        original = html
+
+        # data.js: hash the payload, excluding the "generated" clock, otherwise
+        # the stamp churns every run and stays frozen for two edits in a minute.
+        fingerprint = {k: v for k, v in data.items() if k != "generated"}
+        stamps = {
+            "data.js": hashlib.sha1(
+                json.dumps(fingerprint, indent=2, ensure_ascii=False).encode("utf-8")
+            ).hexdigest()[:8]
+        }
+        for asset in ("styles.css", "app.js"):
+            path = os.path.join(os.path.dirname(OUT), asset)
+            if os.path.exists(path):
+                with open(path, "rb") as fh:
+                    stamps[asset] = hashlib.sha1(fh.read()).hexdigest()[:8]
+
+        for asset, digest in stamps.items():
+            attr = "href" if asset.endswith(".css") else "src"
+            html = re.sub(
+                rf'({attr}="){re.escape(asset)}(\?v=[0-9a-f]+)?(")',
+                lambda m, d=digest: f"{m.group(1)}{asset}?v={d}{m.group(3)}",
+                html,
+            )
+
+        if html != original:
             with open(index, "w", encoding="utf-8") as fh:
-                fh.write(stamped)
-            print(f"stamped {os.path.basename(index)} with ?v={stamp}")
+                fh.write(html)
+            print("stamped " + ", ".join(f"{k}={v}" for k, v in sorted(stamps.items())))
 
     if missing:
         print(f"\nStill to fill in ({len(missing)}):")

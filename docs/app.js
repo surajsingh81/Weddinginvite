@@ -387,8 +387,14 @@
     return "https://wa.me/" + phone + "?text=" + encodeURIComponent(text);
   }
   var waFloatHref = waLink(coupleLine + " — I'd love to attend!");
-  if (waFloatHref) $("waFloat").href = waFloatHref;
-  else $("waFloat").hidden = true;
+  /* Both branches are required. The element ships with `hidden` in the markup,
+     so setting the href alone leaves it invisible forever. */
+  if (waFloatHref) {
+    $("waFloat").href = waFloatHref;
+    $("waFloat").hidden = false;
+  } else {
+    $("waFloat").hidden = true;
+  }
 
   function readRSVPs() {
     try { return JSON.parse(localStorage.getItem(RSVPS) || "[]"); } catch (e) { return []; }
